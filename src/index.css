@@ -1,0 +1,135 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-soft: var(--primary-soft);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-danger: var(--danger);
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #f0f2f5;
+  --border: #e2e5ea;
+  --fg: #111827;
+  --muted: #6b7280;
+  --positive: #15803d;
+  --negative: #c2410c;
+  --danger: #dc2626;
+  --primary: #059669;
+  --primary-fg: #ffffff;
+  --primary-soft: color-mix(in oklab, var(--primary) 13%, transparent);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0b0f14;
+  --surface: #131922;
+  --surface-2: #1b2330;
+  --border: #263041;
+  --fg: #e8ecf2;
+  --muted: #94a0b2;
+  --positive: #4ade80;
+  --negative: #fb923c;
+  --danger: #f87171;
+  --primary-fg: #0b0f14;
+  color-scheme: dark;
+}
+
+/* Accent palettes — each has a light-mode and a dark-mode primary. */
+[data-palette='emerald'] {
+  --primary: #059669;
+}
+[data-palette='ocean'] {
+  --primary: #0284c7;
+}
+[data-palette='sunset'] {
+  --primary: #ea580c;
+}
+[data-palette='grape'] {
+  --primary: #7c3aed;
+}
+[data-palette='rose'] {
+  --primary: #e11d48;
+}
+[data-palette='slate'] {
+  --primary: #475569;
+}
+.dark[data-palette='emerald'] {
+  --primary: #34d399;
+}
+.dark[data-palette='ocean'] {
+  --primary: #38bdf8;
+}
+.dark[data-palette='sunset'] {
+  --primary: #fb923c;
+}
+.dark[data-palette='grape'] {
+  --primary: #a78bfa;
+}
+.dark[data-palette='rose'] {
+  --primary: #fb7185;
+}
+.dark[data-palette='slate'] {
+  --primary: #a5b4c8;
+}
+
+html[data-density='compact'] {
+  font-size: 14px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.45);
+  backdrop-filter: blur(2px);
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-border bg-surface;
+  }
+  .input {
+    @apply w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-fg outline-none transition placeholder:text-muted focus:border-primary focus:ring-2 focus:ring-primary/25 disabled:opacity-60;
+  }
+  .label {
+    @apply mb-1 block text-xs font-medium text-muted;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@keyframes fab-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

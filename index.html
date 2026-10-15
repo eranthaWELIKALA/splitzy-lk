@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="./favicon.ico" sizes="48x48" />
+    <link rel="icon" href="./favicon.svg" sizes="any" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon-180x180.png" />
+    <meta name="apple-mobile-web-app-title" content="Splitzy" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="theme-color" content="#f5f6f8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Splitzy — split bills and expenses with friends and groups."
+    />
+    <title>Splitzy</title>
+    <script>
+      // Apply the saved theme before first paint to avoid a flash of the wrong theme.
+      (function () {
+        try {
+          var raw = localStorage.getItem('splitzy-theme');
+          var s = raw ? JSON.parse(raw).state : {};
+          var mode = s.mode || 'system';
+          var dark =
+            mode === 'dark' ||
+            (mode === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+          var root = document.documentElement;
+          root.classList.toggle('dark', dark);
+          root.dataset.palette = s.palette || 'emerald';
+        } catch (e) {}
+      })();
+    </script>
+    <style>
+      /* Launch splash: inline so it paints before any script or bundled CSS loads.
+         src/lib/splash.ts fades it out once the app is ready. Colours fall back to
+         the default theme until the app stylesheet (which defines the tokens) arrives. */
+      .splash {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: calc(24px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+        background: var(--bg, #f5f6f8);
+        color: var(--fg, #111827);
+        font-family:
+          'Inter',
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        transition: opacity 0.3s ease;
+      }
+      .dark .splash {
+        background: var(--bg, #0b0f14);
+        color: var(--fg, #e8ecf2);
+      }
+      .dark .splash-highlight,
+      .dark .splash-loader span {
+        background: var(--primary, #34d399);
+        color: var(--primary-fg, #0b0f14);
+      }
+      .dark .splash-loader {
+        background: var(--border, #263041);
+      }
+      .dark .splash-tag,
+      .dark .splash-footer {
+        color: var(--muted, #94a0b2);
+      }
+      .splash.out {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .splash-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .splash-icon {
+        width: 88px;
+        height: 88px;
+        border-radius: 22px;
+        box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.35);
+        animation: splash-icon 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .splash-name {
+        margin-top: 6px;
+        font-size: 1.9rem;
+        font-weight: 800;
+      }
+      /* Rotated "sticker" behind the wordmark. */
+      .splash-highlight {
+        display: inline-block;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: var(--primary, #059669);
+        color: var(--primary-fg, #fff);
+        transform: rotate(-1.5deg);
+      }
+      .splash-tag {
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted, #6b7280);
+      }
+      .splash-loader {
+        position: relative;
+        width: 140px;
+        height: 4px;
+        margin-top: 18px;
+        border-radius: 4px;
+        background: var(--border, #e2e5ea);
+        overflow: hidden;
+      }
+      .splash-loader span {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 40%;
+        border-radius: 4px;
+        background: var(--primary, #059669);
+        animation: splash-load 1.1s ease-in-out infinite;
+      }
+      .splash-footer {
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--muted, #6b7280);
+      }
+      @keyframes splash-load {
+        0% {
+          left: -40%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+      @keyframes splash-icon {
+        from {
+          opacity: 0;
+          transform: scale(0.85);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .splash,
+        .splash-icon {
+          transition: none;
+          animation: none;
+        }
+        .splash-loader span {
+          animation-duration: 2.4s;
+        }
+      }
+      @media print {
+        .splash {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Launch splash: plain HTML so it paints before any script runs; src/lib/splash.ts fades it out. -->
+    <div id="splash" class="splash" aria-hidden="true">
+      <div class="splash-main">
+        <img src="./pwa-192x192.png" alt="" class="splash-icon" width="88" height="88" />
+        <div class="splash-name"><span class="splash-highlight">Splitzy</span></div>
+        <div class="splash-tag">Split expenses with friends</div>
+        <div class="splash-loader"><span></span></div>
+      </div>
+      <div class="splash-footer">by Erantha Welikala</div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
